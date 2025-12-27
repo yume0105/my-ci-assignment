@@ -1,0 +1,34 @@
+name: CI Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest ruff bandit
+
+    # 1. Unit Test
+    - name: Run Unit Tests
+      run: pytest tests/
+
+    # 2. Linter 
+    - name: Run Linter (Ruff)
+      run: ruff check .
+      continue-on-error: true # エラーがあっても次のステップに進むように設定
+
+    # 3. Security Scan 
+    - name: Run Security Scan (Bandit)
+      run: bandit -r src/
+      continue-on-error: true # 脆弱性が見つかってもレポート用にログを残すため続行
