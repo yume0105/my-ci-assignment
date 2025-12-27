@@ -21,7 +21,9 @@ jobs:
 
     # 1. Unit Test
     - name: Run Unit Tests
-      run: pytest tests/
+      run: |
+        export PYTHONPATH=$PYTHONPATH:.
+        pytest tests/
 
     # 2. Linter 
     - name: Run Linter (Ruff)
